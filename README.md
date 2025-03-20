@@ -1,1 +1,1 @@
-# Feraz-ICS4U-Game
+# Feraz-ICS4U-GAME
