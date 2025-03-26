@@ -37,35 +37,35 @@ class GameState:
         elif self.state == GAME_OVER:
             self.draw_game_over()
 
-    # Functions for each state
+    # Functions for the menu states
     def show_main_menu(self):
-        """main menu logic"""
+        """Menu Logic"""
         pass
 
     def draw_main_menu(self):
-        """main menu graphics"""
-        pass
-
-    def play_game(self):
-        """Main game loop logic."""
+        """Menu Graphics"""
         pass
 
     def show_pause_screen(self):
-        """Display the pause screen."""
-        pass
-
-    def show_game_over(self):
-        """Display the game over screen."""
-        pass
-
-    def draw_game(self):
-        """Draw the game level."""
+        """Pause Logic"""
         pass
 
     def draw_pause_screen(self):
-        """Draw the pause screen."""
+        """Pause Graphics"""
         pass
 
-    def draw_game_over(self):
-        """Draw the game over screen."""
+    def show_game_over(self):
+        """Game Over Logic"""
         pass
+    
+    def draw_game_over(self):
+        """Game Over Graphics"""
+        pass
+
+ def play_game(self):
+        """Main game loop logic."""
+        self.level_manager.play_game()
+
+ def draw_game(self):
+        """Draw the game level."""
+        self.level_manager.draw_game()
