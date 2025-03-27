@@ -16,7 +16,7 @@ class GameState:
         self.screen = screen
         self.state = MAIN_MENU  # the game starts in the main menu
         self.level_manager = LevelManager(screen)  # Create an instance of LevelManager
-        
+
     def update_logic(self):
         # Update game logic based on current game state
         if self.state == MAIN_MENU:
