@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from levels.levels import LevelManager  # Import LevelManager
 
 # Initialize pygame
 pygame.init()
@@ -14,13 +15,14 @@ class GameState:
     def __init__(self, screen):
         self.screen = screen
         self.state = MAIN_MENU  # the game starts in the main menu
+        self.level_manager = LevelManager(screen)  # Create an instance of LevelManager
 
     def update_logic(self):
         # Update game logic based on current game state
         if self.state == MAIN_MENU:
             self.show_main_menu()
         elif self.state == IN_GAME:
-            self.play_game()
+             self.level_manager.draw()  # Calls to level_manager in levels.py to update level logic
         elif self.state == PAUSE:
             self.show_pause_screen()
         elif self.state == GAME_OVER:
@@ -31,13 +33,13 @@ class GameState:
         if self.state == MAIN_MENU:
             self.draw_main_menu()
         elif self.state == IN_GAME:
-            self.draw_game()
+            self.level_manager.update()  # Calls to level_manager in levels.py to update level graphics
         elif self.state == PAUSE:
             self.draw_pause_screen()
         elif self.state == GAME_OVER:
             self.draw_game_over()
 
-    # Functions for the menu states
+    # Menu State Functions
     def show_main_menu(self):
         """Menu Logic"""
         pass
@@ -61,11 +63,3 @@ class GameState:
     def draw_game_over(self):
         """Game Over Graphics"""
         pass
-
- def play_game(self):
-        """Main game loop logic."""
-        self.level_manager.play_game()
-
- def draw_game(self):
-        """Draw the game level."""
-        self.level_manager.draw_game()
