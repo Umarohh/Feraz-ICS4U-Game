@@ -1,17 +1,17 @@
 import pygame
 
-class Level1:
+class Level3:
     def __init__(self, screen):
         self.screen = screen
         self.completed = False  # Track if the level is completed
 
     def update(self):
-        """Level 1 logic"""
+        """Level 3 logic"""
         if self.check_completion_condition():  
             self.completed = True  # Mark level as completed
 
     def draw(self):
-        """Render Level 1"""
+        """Render Level 3"""
         pass
 
     def check_completion_condition(self):

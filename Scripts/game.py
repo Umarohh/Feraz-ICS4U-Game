@@ -16,13 +16,13 @@ class GameState:
         self.screen = screen
         self.state = MAIN_MENU  # the game starts in the main menu
         self.level_manager = LevelManager(screen)  # Create an instance of LevelManager
-
+        
     def update_logic(self):
         # Update game logic based on current game state
         if self.state == MAIN_MENU:
             self.show_main_menu()
         elif self.state == IN_GAME:
-             self.level_manager.draw()  # Calls to level_manager in levels.py to update level logic
+             self.level_manager.update()  # Calls to level_manager in levels.py to update level logic
         elif self.state == PAUSE:
             self.show_pause_screen()
         elif self.state == GAME_OVER:
@@ -33,7 +33,7 @@ class GameState:
         if self.state == MAIN_MENU:
             self.draw_main_menu()
         elif self.state == IN_GAME:
-            self.level_manager.update()  # Calls to level_manager in levels.py to update level graphics
+            self.level_manager.draw()  # Calls to level_manager in levels.py to update level graphics
         elif self.state == PAUSE:
             self.draw_pause_screen()
         elif self.state == GAME_OVER:
