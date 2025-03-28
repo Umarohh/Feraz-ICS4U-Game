@@ -1,6 +1,8 @@
-from levels.level_1 import Level1  # Import level 1 class from file
-from levels.level_2 import Level2  # Import level 2 class from file
-from levels.level_3 import Level3  # Import level 3 class from file
+from Levels.level_1 import Level1  # Import level 1 class from file
+from Levels.level_2 import Level2  # Import level 2 class from file
+from Levels.level_3 import Level3  # Import level 3 class from file
+from Levels.level_dependancies import Level
+
 
 
 class LevelManager:
@@ -29,20 +31,3 @@ class LevelManager:
         if self.current_level:
             self.current_level.draw() # level_1.draw, level_2.draw, etc...
 
-class Level:
-    def __init__(self, screen):
-        self.screen = screen
-        self.completed = False  # Track if the level is completed
-
-    def check_completion_condition(self):
-        self.completed = True  # Level is completed if condition is met
-       
-    def is_completed(self):
-        """Return whether the level is completed to outside classes such as level_manager"""
-        return self.completed
-    
-    def update(self):   # not necessary, only for if level# classes do not have their own update method, avoiding an attribute error
-        pass
-
-    def draw(self):  # not necessary, only for if level# classes do not have their own draw method, avoiding an attribute error
-        pass

@@ -1,6 +1,6 @@
 import pygame
 import sys
-from game import GameState
+from Scripts.game import GameState
 
 #Constants
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720

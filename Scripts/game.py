@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
-from levels.levels import LevelManager  # Import LevelManager
+from Scripts.levels import LevelManager  # Import LevelManager
+
 
 # Initialize pygame
 pygame.init()

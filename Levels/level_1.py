@@ -1,6 +1,8 @@
 import pygame
+from Levels.level_dependancies import Level
 
-class Level1(level):
+
+class Level1(Level):
     def __init__(self, screen):
         super().__init__(screen)  # Calls Level's __init__, so screen and completed are set
 
