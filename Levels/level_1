@@ -1,9 +1,8 @@
 import pygame
 
-class Level1:
+class Level1(level):
     def __init__(self, screen):
-        self.screen = screen
-        self.completed = False  # Track if the level is completed
+        super().__init__(screen)  # Calls Level's __init__, so screen and completed are set
 
     def update(self):
         """Level 1 logic"""
