@@ -3,31 +3,32 @@ from Levels.level_2 import Level2  # Import level 2 class from file
 from Levels.level_3 import Level3  # Import level 3 class from file
 from Levels.level_dependancies import Level
 
-
-
 class LevelManager:
+    """Class to manage the order and updating of levels of the game"""
     def __init__(self, screen):
         self.screen = screen
-        self.levels = [Level1(screen), Level2(screen), Level3(screen)]  # List of levels from level classes
-        self.current_level_index = 0  # Start at the first in the index
-        self.current_level = self.levels[self.current_level_index]  # The level is the level in the current index
+        self.levels = [Level1(screen), Level2(screen), Level3(screen)]  # Chronological order of levels
+        self.current_level_index = 0  # Start at level 1
+        self.current_level = self.levels[self.current_level_index]  # The level is the currently indexed level
     
     def load_next_level(self):
         """Advance to the next level if available"""
-        if self.current_level_index < len(self.levels) - 1:
-            self.current_level_index += 1
-            self.current_level = self.levels[self.current_level_index]
+        if self.current_level_index < len(self.levels) - 1: # If there is a next level
+            self.current_level_index += 1 # Increment the level number in the index
+            self.current_level = self.levels[self.current_level_index] # The current level is the currently indexed level
         else: 
             pass
 
-    def update (self):  # level__manager.update calls each level to update independantly
+    def update_logic (self):  
+        """In game update logic"""
         if self.current_level:
-            self.current_level.update() # level_1.update, level_2.update, etc...
+            self.current_level.update_graphics() # Update logic depending on current level
 
-        if self.current_level.is_completed():
-            self.load_next_level()
+        if self.current_level.is_completed(): 
+            self.load_next_level() # If the current level is completed, load the next level
 
-    def draw(self): # level__manager.draw calls each level to render independantly
+    def update_graphics(self): 
+        """In game rendering logic"""
         if self.current_level:
-            self.current_level.draw() # level_1.draw, level_2.draw, etc...
+            self.current_level.update_logic() # Update graphics depending on current level
 

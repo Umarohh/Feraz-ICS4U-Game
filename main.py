@@ -13,8 +13,6 @@ pygame.display.set_caption("Feraz")
 clock = pygame.time.Clock()
 game = GameState(screen)
 
-
-
 #Main Function, game loop calling the main class, update, and draw functions
 def main():
     running = True
