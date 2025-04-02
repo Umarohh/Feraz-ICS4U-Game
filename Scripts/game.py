@@ -18,7 +18,7 @@ class GameState:
         self.level_manager = LevelManager(screen)  # Create an instance of LevelManager, to be called when in game
 
     def update_logic(self):
-        """Update game logic based on current game state""""
+        """Update game logic based on current game state"""
         if self.state == MAIN_MENU:
             self.show_main_menu()
         elif self.state == IN_GAME:
@@ -29,7 +29,7 @@ class GameState:
             self.show_game_over()
 
     def update_graphics(self):
-        """Update game graphics based on current game state""""
+        """Update game graphics based on current game state"""
         if self.state == MAIN_MENU:
             self.draw_main_menu()
         elif self.state == IN_GAME:
