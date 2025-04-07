@@ -30,9 +30,13 @@ class LevelManager:
             self.load_next_level() # If the current level is completed, load the next level
 
         self.camera.update(self.player)  # Update camera position based on player
+        # must update all objects and entities in the current level
+        pass
 
     def update_graphics(self): 
         """In game rendering logic"""
         if self.current_level:
             self.current_level.update_logic() # Update graphics depending on current level
+        # must update all objects and entities in the current level
+        pass
 
