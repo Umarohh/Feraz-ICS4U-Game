@@ -2,6 +2,7 @@ from Levels.level_1 import Level1  # Import level 1 class from file
 from Levels.level_2 import Level2  # Import level 2 class from file
 from Levels.level_3 import Level3  # Import level 3 class from file
 from Levels.level_dependancies import Level
+from Scripts.camera import Camera
 
 class LevelManager:
     """Class to manage the order and updating of levels of the game"""
