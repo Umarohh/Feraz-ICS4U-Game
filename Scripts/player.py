@@ -67,7 +67,6 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
             # Set the image to the next frame
             self.image = self.animations[self.current_animation][self.current_frame]
 
-
     def handle_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -86,7 +85,6 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
     def handle_gravity(self):
         GRAVITY = 0.5  # Define GRAVITY constant
         self.velocity_y += GRAVITY
-        self.rect.y += self.velocity_y
 
     def handle_collisions(self, tiles):
         # Handling vertical movement (Y-axis)
@@ -145,9 +143,14 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
     def sprint_right(self):   
         pass
 
+    def handle_movement(self):
+        self.rect.y += self.velocity_y
+        self.rect.x += self.velocity_x
+
     def update(self):
         tiles = []  # Ensure tiles is defined
         self.handle_input()
         self.handle_gravity()
+        self.handle_movement()
         self.handle_collisions(tiles)
         self.update_animation()  # Update animation frame based on the current animation

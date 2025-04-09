@@ -19,3 +19,5 @@ class Level1(Level):
         # Placeholder for actual completion logic
         # For example, check if a certain condition is met in the game
         return False
+    
+    
