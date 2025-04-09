@@ -46,7 +46,9 @@ class GameState:
 
     def draw_main_menu(self):
         """Menu Graphics"""
-        pass
+        title_image = pygame.image.load("Assets/title_screen.jpeg").convert()
+        title_image = pygame.transform.scale(title_image, self.screen.get_size())
+        self.screen.blit(title_image, (0, 0))
 
     def show_pause_screen(self):
         """Pause Logic"""

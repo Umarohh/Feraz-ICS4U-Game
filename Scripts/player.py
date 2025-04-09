@@ -18,6 +18,14 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
         self.speed = 5  # Define player speed
         self.idle()  # You start as idle
             
+    def load_animation(self, folder_path, animation_name, frame_count):
+        """Loads the animation frames from the specified folder"""
+        frames = []
+        for i in range(1, frame_count + 1):
+            path = os.path.join(folder_path, f"{animation_name}_{i}.png")
+            image = pygame.image.load(path).convert_alpha()  # Load the image and keep transparency
+            frames.append(image)
+        return frames
 
     def load_images(self):
         """Load all animations from assets folder"""
@@ -34,15 +42,6 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
             "jump": self.jumping_frames,
             "fall": self.falling_frames,
             }
-
-    def load_animation(self, folder_path, animation_name, frame_count):
-        """Loads the animation frames from the specified folder"""
-        frames = []
-        for i in range(1, frame_count + 1):
-            path = os.path.join(folder_path, f"{animation_name}_{i}.png")
-            image = pygame.image.load(path).convert_alpha()  # Load the image and keep transparency
-            frames.append(image)
-        return frames
     
     def set_animation(self, name):
        """Switch to a new animation"""
