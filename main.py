@@ -1,6 +1,7 @@
 import pygame
 import sys
 from Scripts.game import GameState
+from Scripts.player import Player
 
 #Constants
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
@@ -23,6 +24,7 @@ def main():
                 running = False
         game.update_logic()
         game.update_graphics()
+        Player.update()
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()   
