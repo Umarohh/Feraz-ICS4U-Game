@@ -1,21 +1,22 @@
 import pygame
 import os
-from main import SCREEN_HEIGHT 
+# from main import SCREEN_HEIGHT  # Removed as it is not accessed
+from Scripts.physcs import PhysicsObject
+
+
 # I have to still import and manage tiles
 
-class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.sprite.Sprite
+class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inherits from pygame.sprite.Sprite
     def __init__(self, x, y):
-        super().__init__()
+        super().__init__(x, y, gravity=0.5)  # Just pass x, y, and gravity to PhysicsObject
+        '''Init Objects'''
         self.load_images()  # Load all animations
         self.image = self.idle_frames[0]  # Initialize with the first idle frame
         self.rect = self.image.get_rect(center=(x, y))
+        '''Init Animation Variables'''
         self.current_frame = 0  # Track the current frame
         self.frame_timer = 0  # Timer to control animation speed
         self.current_animation = "idle"  # Initialize current animation
-        self.velocity_x = 0  # Initialize horizontal velocity
-        self.velocity_y = 0  # Initialize vertical velocity
-        self.on_ground = False  # Initialize ground state
-        self.speed = 5  # Define player speed
         self.idle()  # You start as idle
             
     def load_animation(self, folder_path, animation_name, frame_count):
@@ -33,14 +34,16 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
         self.walking_frames = self.load_animation("assets/player", "walking", 6)
         self.sprinting_frames = self.load_animation("assets/player", "sprinting", 6)
         self.jumping_frames = self.load_animation("assets/player", "jumping", 1)  # 1 frame for jumping
+        self.jumping_facing_frames = self.load_animation("assets/player", "jumping_facing", 2)  # 1 frame for jumping facing
         self.falling_frames = self.load_animation("assets/player", "falling", 1)  # 1 frame for falling
-         # Store all animations in a dictionary
+        # Store all animations in a dictionary
         self.animations = {
             "idle": self.idle_frames,
             "walk": self.walking_frames,
             "sprint": self.sprinting_frames,
             "jump": self.jumping_frames,
-            "fall": self.falling_frames,
+            "jump_direction": self.jumping_facing_frames,
+            "fall": self.falling_frames
             }
     
     def set_animation(self, name):
@@ -75,50 +78,17 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
             self.walk_right()
         if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
             self.jump()
-        if keys[pygame.K_DOWN]:
-            self.rect.y += self.speed
         if keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
             self.sprint_right()
         if keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
             self.sprint_left()
+        
+        if keys[pygame.K_RIGHT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.jump_right()
+
+        if keys[pygame.K_LEFT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.jump_left()
       
-    def handle_gravity(self):
-        GRAVITY = 0.5  # Define GRAVITY constant
-        self.velocity_y += GRAVITY
-
-    def handle_collisions(self, tiles):
-        # Handling vertical movement (Y-axis)
-        self.rect.y += self.velocity_y
-        for tile in tiles:
-            if self.rect.colliderect(tile.rect):
-                if self.velocity_y > 0:  # Falling
-                    self.rect.bottom = tile.rect.top  # Place the player on top of the tile
-                    self.velocity_y = 0  # Stop downward movement
-                    self.on_ground = True  # Mark as on the ground
-                elif self.velocity_y < 0:  # Moving up (e.g., jumping)
-                    self.rect.top = tile.rect.bottom  # Place the player below the tile
-                    self.velocity_y = 0  # Stop upward movement
-
-        # Handling horizontal movement (X-axis)
-        self.rect.x += self.velocity_x
-        for tile in tiles:
-            if self.rect.colliderect(tile.rect):
-                if self.velocity_x > 0:  # Moving right
-                    self.rect.right = tile.rect.left  # Prevent player from going through the tile
-                    self.velocity_x = 0  # Stop rightward movement
-                elif self.velocity_x < 0:  # Moving left
-                    self.rect.left = tile.rect.right  # Prevent player from going through the tile
-                    self.velocity_x = 0  # Stop leftward movement
-
-        # Check if player is falling below the screen
-        if self.rect.bottom > SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT
-            self.velocity_y = 0  # Stop downward movement
-
-        # Check if player is above the screen (if needed)
-        if self.rect.top < 0:
-            self.rect.top = 0  # Align the player's top edge with the top of the screen
-            self.velocity_y = 0  # Stop upward movement
 
     def idle(self):
         # Placeholder for idle behavior
@@ -126,22 +96,45 @@ class Player(pygame.sprite.Sprite):         # Player class inherits from pygame.
 
     def walk_left(self):
         # Placeholder for walking left behavior
-        pass
+        self.x_velocity = -5  # Example speed
+        self.set_animation("walk")
+        self.image = pygame.transform.flip(self.walking_frames[self.current_frame], True, False)
+        self.rect = self.image.get_rect(center=self.rect.center)  # Update rect position
 
     def walk_right(self):
         # Placeholder for walking right behavior
-        pass
+        self.x_velocity = 5
+        self.set_animation("walk")
 
     def jump(self):
         # Placeholder for jumping behavior
-        pass
+        self.y_velocity = -10
+        self.set_animation("jump")
+
+    def jump_left(self):
+        # Placeholder for jumping left behavior
+        self.x_velocity = -5
+        self.y_velocity = -10
+        self.set_animation("jump_direction")
+        self.image = pygame.transform.flip(self.jumping_facing_frames[self.current_frame], True, False)
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def jump_right(self):
+        # Placeholder for jumping right behavior
+        self.x_velocity = 5
+        self.y_velocity = -10
+        self.set_animation("jump_direction")
 
     def sprint_left(self):
         # Placeholder for sprinting left behavior
-        pass
+        self.x_velocity = -10
+        self.set_animation("sprint")
+        self.image = pygame.transform.flip(self.sprinting_frames[self.current_frame], True, False)
+        self.rect = self.image.get_rect(center=self.rect.center)  # Update rect position
 
     def sprint_right(self):   
-        pass
+        self.x_velocity = 10
+        self.set_animation("sprint")
 
     def handle_movement(self):
         self.rect.y += self.velocity_y

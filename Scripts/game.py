@@ -42,9 +42,8 @@ class GameState:
     # Menu State Functions
     def show_main_menu(self):
         """Menu Logic"""
-        if keys[pygame.K_RETURN]:
+        if pygame.key.get_pressed[pygame.K_RETURN]:
             self.state = IN_GAME
-
 
     def draw_main_menu(self):
         """Menu Graphics"""

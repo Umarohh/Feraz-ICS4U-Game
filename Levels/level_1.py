@@ -1,5 +1,6 @@
 import pygame
 from Levels.level_dependancies import Level
+from Scripts.player import Player
 
 class Level1(Level):
     def __init__(self, screen):
@@ -12,7 +13,8 @@ class Level1(Level):
 
     def update_graphics(self):
         """Level 1 Graphics"""
-        pass
+        self.screen.fill((0, 0, 0))  # Clear the screen first
+        self.screen.blit(self.player.image, self.player.rect)
 
     def check_completion_condition(self):
         """Check if the level is completed"""

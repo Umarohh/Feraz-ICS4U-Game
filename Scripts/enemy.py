@@ -46,12 +46,12 @@ class Enemy(pygame.sprite.Sprite):
         """Reduce health and handle knockback."""
         if self.health > 0:
             self.health -= 1
-            print(f"Enemy damaged! Health left: {self.health}")
             self.activate_knockback()
         
         if self.health <= 0:
             self.knockback = True
-            print("Enemy defeated!")
+            pass
+
 
     def activate_knockback(self):
         """Temporarily disable the enemy."""
@@ -69,9 +69,5 @@ class Enemy(pygame.sprite.Sprite):
 
     def attack(self):
         """Simulate an attack."""
-        if self.is_active:
-            print("Enemy attacks!")
-            # Add attack logic or animations here
-        else:
-            print("Enemy is not active and cannot attack.") 
+        pass
             
