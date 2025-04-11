@@ -13,7 +13,6 @@ class LevelManager:
         self.current_level = self.levels[self.current_level_index]  # The level is the currently indexed level
         self.camera = Camera(screen.get_width(), screen.get_height()) # Create a camera object with the screen width and height
 
-
     def load_next_level(self):
         """Advance to the next level if available"""
         if self.current_level_index < len(self.levels) - 1: # If there is a next level

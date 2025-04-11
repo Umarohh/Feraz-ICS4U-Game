@@ -1,7 +1,7 @@
 import pygame
 import os
 # from main import SCREEN_HEIGHT  # Removed as it is not accessed
-from Scripts.physcs import PhysicsObject
+from Scripts.physics import PhysicsObject
 
 
 # I have to still import and manage tiles
