@@ -74,31 +74,26 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            if (keys[pygame.K_UP] or keys[pygame.K_SPACE]) and self.on_ground and not self.is_jumping:
                 self.jump_left()
-            if keys[pygame.K_LSHIFT]:
+            elif keys[pygame.K_LSHIFT]:
                 self.sprint_left()
             else:
-                 self.walk_left()
+                self.walk_left()
     
-        if keys[pygame.K_RIGHT]:
-            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+        elif keys[pygame.K_RIGHT]:
+            if (keys[pygame.K_UP] or keys[pygame.K_SPACE]) and self.on_ground and not self.is_jumping:
                 self.jump_right()
-            
+            elif keys[pygame.K_LSHIFT]:
+                self.sprint_right()
             else:
-            self.walk_right()
-        if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-            self.jump()
-        if keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
-            self.sprint_right()
-        if keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
-            self.sprint_left()
-        
-        if keys[pygame.K_RIGHT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-            self.jump_right()
+                 self.walk_right()
 
-        if keys[pygame.K_LEFT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-            self.jump_left()
+        else:
+            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+                self.jump()
+            else:
+                self.idle()
       
 
     def idle(self):
@@ -121,6 +116,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         # Placeholder for jumping behavior
         self.y_velocity = -10
         self.set_animation("jump")
+        self.is_jumping = True 
 
     def jump_left(self):
         # Placeholder for jumping left behavior
@@ -129,12 +125,16 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.set_animation("jump_direction")
         self.image = pygame.transform.flip(self.jumping_facing_frames[self.current_frame], True, False)
         self.rect = self.image.get_rect(center=self.rect.center)
+        self.is_jumping = True 
+
 
     def jump_right(self):
         # Placeholder for jumping right behavior
         self.x_velocity = 5
         self.y_velocity = -10
         self.set_animation("jump_direction")
+        self.is_jumping = True 
+
 
     def sprint_left(self):
         # Placeholder for sprinting left behavior
