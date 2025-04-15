@@ -2,6 +2,11 @@ import pygame
 import os
 # from main import SCREEN_HEIGHT  # Removed as it is not accessed
 from Scripts.physics import PhysicsObject
+import time
+
+class ShieldType:
+    ACTIVE = 'active'
+    PASSIVE = 'passive'
 
 
 # I have to still import and manage tiles
@@ -18,15 +23,24 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.frame_timer = 0  # Timer to control animation speed
         self.current_animation = "idle"  # Initialize current animation
         self.idle()  # You start as idle
+# Shield System
+        self.shield_type = None
+        self.shield_active = False
+        self.shield_duration = 3  # seconds
+        self.shield_cooldown = 5  # seconds
+        self.shield_last_activated = 0
+        self.shield_start_time = 0
+        self.shield_end_time = 0
+
             
-    def load_animation(self, folder_path, animation_name, frame_count):
-        """Loads the animation frames from the specified folder"""
-        frames = []
-        for i in range(1, frame_count + 1):
-            path = os.path.join(folder_path, f"{animation_name}_{i}.png")
-            image = pygame.image.load(path).convert_alpha()  # Load the image and keep transparency
-            frames.append(image)
-        return frames
+def load_animation(self, folder_path, animation_name, frame_count):
+    """Loads the animation frames from the specified folder"""
+    frames = []
+    for i in range(1, frame_count + 1):
+        path = os.path.join(folder_path, f"{animation_name}_{i}.png")
+        image = pygame.image.load(path).convert_alpha()  # Load the image and keep transparency
+        frames.append(image)
+    return frames
 
     def load_images(self):
         """Load all animations from assets folder"""
@@ -44,7 +58,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             "jump": self.jumping_frames,
             "jump_direction": self.jumping_facing_frames,
             "fall": self.falling_frames
-            }
+        }
     
     def set_animation(self, name):
        """Switch to a new animation"""
@@ -69,31 +83,66 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
 
             # Set the image to the next frame
             self.image = self.animations[self.current_animation][self.current_frame]
+def activate_shield(self, shield_type):
+    current_time = time.time()
+    if current_time - self.shield_last_activated < self.shield_cooldown:
+        return False  # Cooldown not finished
 
+    self.shield_type = shield_type
+    self.shield_active = True
+    self.shield_start_time = current_time
+    self.shield_end_time = current_time + self.shield_duration
+    self.shield_last_activated = current_time
+    return True
+
+def update_shield(self):
+    if self.shield_active and time.time() > self.shield_end_time:
+        self.shield_active = False
+        self.shield_type = None
+
+def is_attack_active(self):
+    return self.shield_active and self.shield_type == ShieldType.ACTIVE
+
+def is_phase_active(self):
+    return self.shield_active and self.shield_type == ShieldType.PASSIVE
+
+def handle_contact(self, target):
+    if self.is_attack_active():
+        if hasattr(target, 'take_damage'):
+            target.take_damage()
+        return "damaged"
+    elif self.is_phase_active():
+        return "phased"
+    return "normal"
     def handle_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            if (keys[pygame.K_UP] or keys[pygame.K_SPACE]) and self.on_ground and not self.is_jumping:
+            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
                 self.jump_left()
-            elif keys[pygame.K_LSHIFT]:
+            if keys[pygame.K_LSHIFT]:
                 self.sprint_left()
             else:
-                self.walk_left()
+                 self.walk_left()
     
-        elif keys[pygame.K_RIGHT]:
-            if (keys[pygame.K_UP] or keys[pygame.K_SPACE]) and self.on_ground and not self.is_jumping:
-                self.jump_right()
-            elif keys[pygame.K_LSHIFT]:
-                self.sprint_right()
-            else:
-                 self.walk_right()
-
-        else:
+        if keys[pygame.K_RIGHT]:
             if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-                self.jump()
+                self.jump_right()
+            
             else:
-                self.idle()
+                self.walk_right()
+        if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.jump()
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
+            self.sprint_right()
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
+            self.sprint_left()
+        
+        if keys[pygame.K_RIGHT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.jump_right()
+
+        if keys[pygame.K_LEFT] and keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+            self.jump_left()
       
 
     def idle(self):
@@ -116,7 +165,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         # Placeholder for jumping behavior
         self.y_velocity = -10
         self.set_animation("jump")
-        self.is_jumping = True 
 
     def jump_left(self):
         # Placeholder for jumping left behavior
@@ -125,16 +173,12 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.set_animation("jump_direction")
         self.image = pygame.transform.flip(self.jumping_facing_frames[self.current_frame], True, False)
         self.rect = self.image.get_rect(center=self.rect.center)
-        self.is_jumping = True 
-
 
     def jump_right(self):
         # Placeholder for jumping right behavior
         self.x_velocity = 5
         self.y_velocity = -10
         self.set_animation("jump_direction")
-        self.is_jumping = True 
-
 
     def sprint_left(self):
         # Placeholder for sprinting left behavior
@@ -150,6 +194,30 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
     def handle_movement(self):
         self.rect.y += self.velocity_y
         self.rect.x += self.velocity_x
+    
+    def handle_mouse_input(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+            self.activate_shield(ShieldType.PASSIVE)
+
+    def draw_shield_bar(self, surface):
+        bar_width = 120
+        bar_height = 10
+        x, y = 20, surface.get_height() - 30
+
+        pygame.draw.rect(surface, (50, 50, 50), (x, y, bar_width, bar_height))
+
+        current_time = time.time()
+        if self.shield_active:
+            remaining = self.shield_end_time - current_time
+            percent = max(0, min(1, remaining / self.shield_duration))
+            color = (0, 200, 255) if self.shield_type == ShieldType.ACTIVE else (200, 100, 255)
+            pygame.draw.rect(surface, color, (x, y, int(bar_width * percent), bar_height))
+        else:
+            cooldown_remaining = self.shield_cooldown - (current_time - self.shield_last_activated)
+            if cooldown_remaining > 0:
+                percent = max(0, min(1, cooldown_remaining / self.shield_cooldown))
+                pygame.draw.rect(surface, (100, 100, 100), (x, y, int(bar_width * percent), bar_height))
+
 
     def update(self):
         tiles = []  # Ensure tiles is defined
