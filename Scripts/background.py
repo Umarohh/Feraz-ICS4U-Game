@@ -30,12 +30,13 @@ parallax_speed_mid = 0.5
 parallax_speed_near = 1
 
 # Environmental effects (clouds)
-def load_clouds():
-    cloud1 = pygame.image.load(os.path.join("assets", "cloud1.png"))
-    cloud2 = pygame.image.load(os.path.join("assets", "cloud2.png"))
-    return [cloud1, cloud2]
+class Cloud:
+    def load_clouds():
+        cloud1 = pygame.image.load(os.path.join("assets", "cloud1.png"))
+        cloud2 = pygame.image.load(os.path.join("assets", "cloud2.png"))
+        return [cloud1, cloud2]
 
-cloud_positions = [(100, 50), (400, 100)]
+    cloud_positions = [(100, 50), (400, 100)]
 
 # Function to render background with parallax effect
 def render_background(bg_far, bg_mid, bg_near):
@@ -70,33 +71,3 @@ def render_background(bg_far, bg_mid, bg_near):
             cloud_x = WIDTH
         cloud_positions[i] = (cloud_x, cloud_y)
         screen.blit(cloud, (cloud_x, cloud_y))
-
-# Main game loop
-def main():
-    global clouds
-
-    # Load assets
-    bg_far, bg_mid, bg_near = load_background_images()
-    clouds = load_clouds()
-
-    running = True
-    clock = pygame.time.Clock()
-
-    while running:
-        screen.fill(WHITE)
-        
-        # Render background with parallax and environmental effects
-        render_background(bg_far, bg_mid, bg_near)
-
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        pygame.display.update()
-        clock.tick(60)  # 60 frames per second
-
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()

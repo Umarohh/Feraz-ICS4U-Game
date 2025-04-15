@@ -72,9 +72,20 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
+
         if keys[pygame.K_LEFT]:
-            self.walk_left()
+            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+                self.jump_left()
+            if keys[pygame.K_LSHIFT]:
+                self.sprint_left()
+            else:
+                 self.walk_left()
+    
         if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+                self.jump_right()
+            
+            else:
             self.walk_right()
         if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
             self.jump()
