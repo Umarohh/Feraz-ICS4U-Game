@@ -66,3 +66,15 @@ class GameState:
     def draw_game_over(self):
         """Game Over Graphics"""
         pass
+class GameState:
+    def __init__(self, screen):
+        self.screen = screen
+
+    def update_logic(self):
+        """Override in subclasses to handle game logic."""
+        pass
+
+    def update_graphics(self):
+        """Override in subclasses to draw graphics on the screen."""
+        pass
+
