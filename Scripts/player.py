@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.current_frame = 0  # Track the current frame
         self.frame_timer = 0  # Timer to control animation speed
         self.current_animation = "idle"  # Initialize current animation
+        self.sprint = False  # Initialize sprint variable
         self.idle()  # You start as idle
             
     def load_animation(self, folder_path, animation_name, frame_count):
@@ -90,7 +91,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         if keys[pygame.K_UP] or keys[pygame.K_SPACE] and self.maximum_jumps > 0 and self.is_on_ground == False:
             self.double_jump()
         if keys[pygame.K_LSHIFT]:
-            sprint = True
+            self.sprint = True
         else:
             self.idle()
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -107,7 +108,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
           
     def move_left(self):
         # Walking Left Logic
-        if sprint == True:
+        if self.sprint == True:
             max_speed = -10
             acceleration = -1
         else:      
@@ -117,7 +118,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             self.x_velocity += acceleration
 
     def move_right(self):
-     if sprint == True:
+        if self.sprint == True:
             max_speed = 10
             acceleration = 1
         else:      
