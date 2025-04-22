@@ -23,6 +23,16 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.frame_timer = 0  # Timer to control animation speed
         self.current_animation = "idle"  # Initialize current animation
         self.sprint = False  # Initialize sprint variable
+        self.jump_force = 10
+        self.jump_hold_time = 10       # How long the jump can be held
+        self.jump_active = False       # Is the jump being held?
+        self.jump_timer = 0            # Countdown timer
+        self.max_jumps = 2             # Total jumps (1 normal + 1 double)
+        self.jumps_left = self.max_jumps
+        self.is_on_ground = False
+        self.x_velocity = 0
+        self.y_velocity = 0
+        self.is_on_ground = True
         self.idle()  # You start as idle
             
     def load_animation(self, folder_path, animation_name, frame_count):
@@ -43,25 +53,39 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.jumping_frames = self.load_animation("assets/player", "jumping", 1)  # 1 frame for jumping
         self.jumping_facing_frames = self.load_animation("assets/player", "jumping_facing", 1)  # 1 frame for jumping facing
         self.falling_frames = self.load_animation("assets/player", "falling", 1)  # 1 frame for falling
+        self.falling_facing_frames = self.load_animation("assets/player", "falling_facing", 1)  # 1 frame for falling
+
         # Store all animations in a dictionary
 
         self.animations = {
             "idle": self.idle_frames,
-            "walk": self.walking_frames,
             "run": self.running_frames,
             "sprint": self.sprinting_frames,
             "jump": self.jumping_frames,
             "jump_direction": self.jumping_facing_frames,
-            "fall": self.falling_frames
+            "fall": self.falling_frames,
+            "fall_drection": self.falling_facing_frames,
         }
         
     def set_animation(self, name):
-       """Switch to a new animation"""
-       if name != self.current_animation:
+        """Switch to a new animation"""
+        if name != self.current_animation:
             self.current_animation = name
             self.current_frame = 0
             self.frame_timer = 0
             self.image = self.animations[name][self.current_frame]
+
+        # Get the current frame of the animation
+        frame = self.animations[name][self.current_frame]
+
+        # Flip image if moving left (negative x_velocity)
+        if self.x_velocity < 0:
+            self.image = pygame.transform.flip(frame, True, False)
+        else:
+            self.image = frame
+
+        # Update the player's rect (position) based on the new image
+        self.rect = self.image.get_rect(center=self.rect.center)
 
     def update_animation(self):
         """Update the current animation frame"""
@@ -86,10 +110,14 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             self.move_left()
         elif keys[pygame.K_RIGHT]: 
             self.move_right()
-        if keys[pygame.K_UP] or keys[pygame.K_SPACE] and not self.jump_active and self.is_on_ground == True:
-            self.jump()
-        if keys[pygame.K_UP] or keys[pygame.K_SPACE] and self.maximum_jumps > 0 and self.is_on_ground == False:
-            self.double_jump()
+        if (keys[pygame.K_SPACE] or keys[pygame.K_UP]):
+            if not self.jump_active and self.jumps_left > 0:
+                self.start_jump()
+        # Hold jump (variable height)
+        if self.jump_active and (keys[pygame.K_SPACE] or keys[pygame.K_UP]):
+            self.continue_jump()
+        else:
+            self.jump_active = False
         if keys[pygame.K_LSHIFT]:
             self.sprint = True
         else:
@@ -128,20 +156,42 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             self.x_velocity += acceleration
 
  
-    def jump(self):
-        if not self.jump_active and self.jumps_left > 0:
-            self.jump_active = True
-            self.jump_hold_time = 0
-            self.jumps_left -= 1
+    def start_jump(self):
+        self.jump_active = True
+        self.jump_timer = self.jump_hold_time
+        self.y_velocity = -self.jump_force
+        self.jumps_left -= 1
+        self.set_animation("jump")
+
+    def continue_jump(self):
+        if self.jump_timer > 0:
             self.y_velocity = -self.jump_force
-            self.set_animation("jump")
+            self.jump_timer -= 1
+        else:
+            self.jump_active = False
 
     def handle_movement(self):
         self.rect.y += self.x_velocity
         self.rect.x += self.y_velocity
 
     def choose_movement_animations(self):
-        pass
+        if self.x_velocity == 0:
+            if self.y_velocity == 0:
+                self.set_animation("idle")
+            elif self.jump_active == True:
+                self.set_animation("jump")
+            elif self.y_velocity > 0:
+                self.set_animation("fall") 
+
+        elif self.x_velocity != 0:
+            if self.jump_active == True:
+                self.set_animation("jump_direction")
+            elif self.sprint == True:
+                self.set_animation("sprint")
+            elif self.sprint == False:
+                self.set_animation("run")
+            elif self.y_velocity > 0:
+                self.set_animation("fall_drection")
 
     def update(self):
         tiles = []  # Ensure tiles is defined
