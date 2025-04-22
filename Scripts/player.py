@@ -23,15 +23,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.frame_timer = 0  # Timer to control animation speed
         self.current_animation = "idle"  # Initialize current animation
         self.idle()  # You start as idle
-# Shield System
-        self.shield_type = None
-        self.shield_active = False
-        self.shield_duration = 3  # seconds
-        self.shield_cooldown = 5  # seconds
-        self.shield_last_activated = 0
-        self.shield_start_time = 0
-        self.shield_end_time = 0
-
             
     def load_animation(self, folder_path, animation_name, frame_count):
         """Loads the animation frames from the specified folder"""
@@ -87,7 +78,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             # Set the image to the next frame
             self.image = self.animations[self.current_animation][self.current_frame]
 
-    def handle_input(self):
+    def handle_input(self, event):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
@@ -98,14 +89,13 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             self.jump()
         if keys[pygame.K_UP] or keys[pygame.K_SPACE] and self.maximum_jumps > 0 and self.is_on_ground == False:
             self.double_jump()
+        if keys[pygame.K_LSHIFT]:
+            sprint = True
         else:
             self.idle()
-
-    def handle_mouse_input(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
-            self.activate_shield(ShieldType.PASSIVE)
-      
-
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pass
+    
     def idle(self):
             # Smooth deceleration
         if self.x_velocity > 0:
@@ -117,8 +107,7 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
           
     def move_left(self):
         # Walking Left Logic
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LSHIFT]:
+        if sprint == True:
             max_speed = -10
             acceleration = -1
         else:      
@@ -128,8 +117,15 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
             self.x_velocity += acceleration
 
     def move_right(self):
-        # Walking Right Logic
-        pass
+     if sprint == True:
+            max_speed = 10
+            acceleration = 1
+        else:      
+            max_speed = 5
+            acceleration = 0.5
+        if self.x_velocity < max_speed:
+            self.x_velocity += acceleration
+
  
     def jump(self):
         if not self.jump_active and self.jumps_left > 0:

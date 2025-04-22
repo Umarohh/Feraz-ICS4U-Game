@@ -1,52 +1,34 @@
 import pygame
 import sys
-from Scripts.ui import GameStateManager  # Import GameStateManager
-from Scripts.states.GameplayState import GameplayState
-from Scripts.states.MainMenuState import MainMenuState
+from Scripts.game import GameState
+from Scripts.player import Player
 
-# Constants
+#Constants
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 FPS = 60
 
-# Initialize Pygame
+#Initialize Pygame
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Feraz")
 clock = pygame.time.Clock()
+game = GameState(screen)
 
-# Initialize the game state manager
-game_manager = GameStateManager(screen)
-
-# Add states
-game_manager.add_state("main_menu", MainMenuState(screen))
-game_manager.add_state("gameplay", GameplayState(screen))
-
-# Set initial state
-game_manager.change_state("main_menu")
-
-# Main Game Loop
+#Main Function, game loop calling the main class, update, and draw functions
 def main():
     running = True
+    #Handle Events
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-            # Pass events to the current game state
-            game_manager.handle_event(event)
-
-        # Update the current game state logic
-        game_manager.update()
-
-        # Draw the current game state graphics
-        game_manager.draw(screen)
-
-        # Update the display and control frame rate
+        game.update_logic()
+        game.update_graphics()
+        Player.update()
         pygame.display.flip()
         clock.tick(FPS)
-
-    pygame.quit()
+    pygame.quit()   
     sys.exit()
-
+    
 if __name__ == "__main__":
     main()
