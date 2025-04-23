@@ -26,6 +26,10 @@ class LevelManager:
         if self.current_level:
             self.current_level.update_graphics() # Update logic depending on current level
 
+        if self.current_level:
+            self.current_level.update_logic() # Update graphics depending on current level
+        # must update all objects and entities in the current level
+
         if self.current_level.is_completed(): 
             self.load_next_level() # If the current level is completed, load the next level
 
@@ -35,8 +39,6 @@ class LevelManager:
 
     def update_graphics(self): 
         """In game rendering logic"""
-        if self.current_level:
-            self.current_level.update_logic() # Update graphics depending on current level
-        # must update all objects and entities in the current level
+
         pass
 

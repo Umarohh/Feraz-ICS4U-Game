@@ -1,11 +1,12 @@
 import pygame
+from main import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Camera:
-    def __init__(self, width, height):
+    def __init__(self):
         self.camera = pygame.Rect(0, 0, width, height)
         self.camera_pos = pygame.Vector2(0, 0)
-        self.width = width
-        self.height = height
+        self.width = SCREEN_WIDTH
+        self.height = SCREEN_HEIGHT
 
     def apply(self, entity):
         """Moves the entity's rect to the correct position relative to the camera"""

@@ -1,5 +1,7 @@
 import pygame
 from Levels.level_dependancies import Level
+from Scripts.player import Player
+
 
 class Level2(Level):
     def __init__(self, screen):
