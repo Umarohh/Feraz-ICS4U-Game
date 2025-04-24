@@ -73,6 +73,9 @@ class PauseState(GameState):
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.manager.change_state("in_game")
 
+    def update_logic(self):
+        pass
+
     def update_graphics(self):
         pass
 
@@ -82,6 +85,9 @@ class GameOverState(GameState):
         for event in events:
             if event.type == KEYDOWN and event.key == K_RETURN:
                 self.manager.change_state("main_menu")
+
+    def update_logic(self):
+        pass
 
     def update_graphics(self):
         pass

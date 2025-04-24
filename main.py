@@ -23,7 +23,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        gsm.update_logic(events)
+        gsm.handle_events(events)
+        gsm.update_logic()
         screen.fill(0, 0, 0)
         gsm.update_graphics()
         Player.update()
