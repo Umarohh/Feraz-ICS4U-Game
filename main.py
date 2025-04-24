@@ -20,7 +20,7 @@ def main():
     #Handle Events
     while running:
         events = pygame.event.get()  # Get events here
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
         gsm.handle_events(events)

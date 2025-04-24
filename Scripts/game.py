@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from Scripts.levels import LevelManager
+from Scripts.scenes import SceneManager
 
 # --- Base GameState class ---
 class GameState:
@@ -53,7 +53,7 @@ class MainMenuState(GameState):
 class InGameState(GameState):
     def __init__(self, manager, screen):
         super().__init__(manager, screen)
-        self.level_manager = LevelManager(screen)
+        self.scene_manager = SceneManager(screen)
 
     def handle_events(self, events):
         for event in events:
@@ -61,10 +61,10 @@ class InGameState(GameState):
                 self.manager.change_state("pause")
 
     def update_logic(self):
-        self.level_manager.update_logic()
+        self.scene_manager.update_logic()
 
     def update_graphics(self):
-        self.level_manager.update_graphics()
+        self.scene_manager.update_graphics()
 
 # --- Pause State ---
 class PauseState(GameState):
