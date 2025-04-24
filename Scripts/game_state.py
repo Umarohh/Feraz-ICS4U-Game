@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
-from Scripts.scenes import SceneManager
+from Scripts.scene_state import SceneManager
 
-# --- Base GameState class ---
+# --- Parent GameState class ---
 class GameState:
     def __init__(self, manager, screen):
         self.manager = manager

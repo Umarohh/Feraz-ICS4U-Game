@@ -1,6 +1,6 @@
 import pygame
 import sys
-from Scripts.game import GameStateManager
+from Scripts.game_state import GameStateManager
 from Scripts.player import Player
 
 #Constants
