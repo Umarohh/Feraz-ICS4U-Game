@@ -1,80 +1,88 @@
 import pygame
 from pygame.locals import *
-from Scripts.levels import LevelManager  # Import LevelManager
+from Scripts.levels import LevelManager
 
-# Initialize pygame
-pygame.init()
-
-# Game State Constants
-MAIN_MENU = "main_menu"
-IN_GAME = "in_game"
-PAUSE = "pause"
-GAME_OVER = "game_over"
-
+# --- Base GameState class ---
 class GameState:
+    def __init__(self, manager, screen):
+        self.manager = manager
+        self.screen = screen
+
+    def handle_events(self, events): pass
+    def update_logic(self): pass
+    def update_graphics(self): pass
+
+# --- Game State Manager ---
+class GameStateManager:
     def __init__(self, screen):
         self.screen = screen
-        self.state = MAIN_MENU  # the game starts in the main menu
-        self.level_manager = LevelManager(screen)  # Create an instance of LevelManager, to be called when in game
+        self.states = {
+            "main_menu": MainMenuState(self, screen),
+            "in_game": InGameState(self, screen),
+            "pause": PauseState(self, screen),
+            "game_over": GameOverState(self, screen),
+        }
+        self.current_state = self.states["main_menu"]
+
+    def change_state(self, new_state_name):
+        self.current_state = self.states[new_state_name]
+
+    def handle_events(self, events):
+        self.current_state.handle_events(events)
 
     def update_logic(self):
-        """Update game logic based on current game state"""
-        if self.state == MAIN_MENU:
-            self.show_main_menu()
-        elif self.state == IN_GAME:
-             self.level_manager.update_logic()  # Calls to level_manager in levels.py to update level logic
-        elif self.state == PAUSE:
-            self.show_pause_screen()
-        elif self.state == GAME_OVER:
-            self.show_game_over()
+        self.current_state.update_logic()
 
     def update_graphics(self):
-        """Update game graphics based on current game state"""
-        if self.state == MAIN_MENU:
-            self.draw_main_menu()
-        elif self.state == IN_GAME:
-            self.level_manager.update_graphics()  # Calls to level_manager in levels.py to update level graphics
-        elif self.state == PAUSE:
-            self.draw_pause_screen()
-        elif self.state == GAME_OVER:
-            self.draw_game_over()
+        self.current_state.update_graphics()
 
-    # Menu State Functions
-    def show_main_menu(self):
-        """Menu Logic"""
-        if pygame.key.get_pressed[pygame.K_RETURN]:
-            self.state = IN_GAME
-
-    def draw_main_menu(self):
-        """Menu Graphics"""
-        title_image = pygame.image.load("Assets/title_screen.jpeg").convert()
-        title_image = pygame.transform.scale(title_image, self.screen.get_size())
-        self.screen.blit(title_image, (0, 0))
-
-    def show_pause_screen(self):
-        """Pause Logic"""
-        pass
-
-    def draw_pause_screen(self):
-        """Pause Graphics"""
-        pass
-
-    def show_game_over(self):
-        """Game Over Logic"""
-        pass
-    
-    def draw_game_over(self):
-        """Game Over Graphics"""
-        pass
-class GameState:
-    def __init__(self, screen):
-        self.screen = screen
+# --- Main Menu State ---
+class MainMenuState(GameState):
+    def handle_events(self, events):
+        for event in events:
+            if event.key == K_RETURN:
+                self.manager.change_state("in_game")
 
     def update_logic(self):
-        """Override in subclasses to handle game logic."""
         pass
 
     def update_graphics(self):
-        """Override in subclasses to draw graphics on the screen."""
+        pass
+
+# --- In Game State ---
+class InGameState(GameState):
+    def __init__(self, manager, screen):
+        super().__init__(manager, screen)
+        self.level_manager = LevelManager(screen)
+
+    def handle_events(self, events):
+        for event in events:
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.manager.change_state("pause")
+
+    def update_logic(self):
+        self.level_manager.update_logic()
+
+    def update_graphics(self):
+        self.level_manager.update_graphics()
+
+# --- Pause State ---
+class PauseState(GameState):
+    def handle_events(self, events):
+        for event in events:
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.manager.change_state("in_game")
+
+    def update_graphics(self):
+        pass
+
+# --- Game Over State ---
+class GameOverState(GameState):
+    def handle_events(self, events):
+        for event in events:
+            if event.type == KEYDOWN and event.key == K_RETURN:
+                self.manager.change_state("main_menu")
+
+    def update_graphics(self):
         pass
 
