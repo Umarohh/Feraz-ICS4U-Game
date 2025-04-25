@@ -1,13 +1,7 @@
 import pygame
 import os
-# from main import SCREEN_HEIGHT  # Removed as it is not accessed
 from Scripts.physics import PhysicsObject
 import time
-
-class ShieldType:
-    ACTIVE = 'active'
-    PASSIVE = 'passive'
-
 
 # I have to still import and manage tiles
 
@@ -192,6 +186,10 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
                 self.set_animation("run")
             elif self.y_velocity > 0:
                 self.set_animation("fall_drection")
+
+    def render(self, screen):
+        """Render the player sprite to the screen"""
+        screen.blit(self.image, self.rect)  # Draw the player at its current position
 
     def update(self):
         tiles = []  # Ensure tiles is defined

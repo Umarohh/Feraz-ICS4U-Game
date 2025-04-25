@@ -47,7 +47,7 @@ class MainMenuState(GameState):
         pass
 
     def update_graphics(self):
-        pass
+        pygame.image.load("Assets/UI/title_screen.jpeg")
 
 # --- In Game State ---
 class InGameState(GameState):
