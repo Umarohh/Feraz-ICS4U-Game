@@ -8,7 +8,6 @@ class Camera:
         self.camera = pygame.Rect(0, 0, self.width, self.height)
         self.camera_pos = pygame.Vector2(0, 0)
 
-
     def apply(self, entity):
         """Moves the entity's rect to the correct position relative to the camera"""
         return entity.rect.move(self.camera.topleft)
