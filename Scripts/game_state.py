@@ -54,7 +54,7 @@ class InGameState(GameState):
     def __init__(self, manager, screen):
         super().__init__(manager, screen)
         self.scene_manager = SceneManager(screen)
-
+        
     def handle_events(self, events):
         for event in events:
             if event.type == KEYDOWN and event.key == K_ESCAPE:

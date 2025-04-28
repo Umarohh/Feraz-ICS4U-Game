@@ -14,10 +14,10 @@ class SceneManager:
     """Class to manage the order and updating of levels of the game"""
     def __init__(self, screen):
         self.screen = screen
-        self.scenes = [Cutscene1(screen), Level1(screen), Level2(screen), Cutscene2(screen), Level3(screen, Cutscene3(screen))]  # Chronological order of levels
-        self.current_scene_index = 0  # Start at level 1
-        self.current_scene = self.scenes[self.current_scene_index]  # The level is the currently indexed level
-        self.camera = Camera(screen.get_width(), screen.get_height()) # Create a camera object with the screen width and height
+        self.scenes = [Cutscene1(self.screen), Level1(self.screen, self.camera, self.player), Level2(self.screen, self.camera, self.player), Cutscene2(self.screen), Level3(self.screen, self.camera, self.player), Cutscene3(self.screen)]  # Chronological order of levels
+        self.current_scene_index = 0  # Start at scene 1
+        self.current_scene = self.scenes[self.current_scene_index]  # The scene is the currently indexed scene
+        self.camera = Camera() # Create a camera object
         self.player = Player(100, 100)
 
     def load_next_scene(self):
@@ -38,7 +38,10 @@ class SceneManager:
         if isinstance(self.current_scene, Level):
             self.camera.update(self.player)  # Update camera position based on player
             self.player.update
-            Tilemap.update()
+
+    
+        if self.scene_manager.is_finished():
+            self.game_state_manager.change_state("game_over")
 
     def update_graphics(self): 
         """In game rendering logic"""
@@ -46,5 +49,4 @@ class SceneManager:
             self.current_scene.update_graphics() # Update logic depending on current level
         if isinstance(self.current_scene, Level):
             self.player.render(self.screen)
-            Tilemap.render(self.screen)
 

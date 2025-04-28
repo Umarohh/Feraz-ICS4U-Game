@@ -23,9 +23,7 @@ class Tile(pygame.sprite.Sprite):
 
 class Tilemap:
     def __init__(self, map_data):
-        self.map_data = map_data
         self.tiles = pygame.sprite.Group()
-        self.create_tiles()
     
     def _parse_file(self, file_path):
         """Read the file and return map data as a 2D array."""
