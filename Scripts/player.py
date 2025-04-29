@@ -29,36 +29,36 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.is_on_ground = True
         self.idle()  # You start as idle
             
-    def load_animation(self, folder_path, animation_name, frame_count):
-        """Loads the animation frames from the specified folder"""
+    def load_animation(self, folder_path):
+        """Loads all image frames from the given folder path"""
         frames = []
-        for i in range(1, frame_count + 1):
-            path = os.path.join(folder_path, f"{animation_name}_{i}.png")
-            image = pygame.image.load(path).convert_alpha()  # Load the image and keep transparency
-            frames.append(image)
+        for filename in sorted(os.listdir(folder_path)):
+            if filename.endswith(".png"):
+                path = os.path.join(folder_path, filename)
+                image = pygame.image.load(path).convert_alpha()
+                frames.append(image)
         return frames
 
     def load_images(self):
-        """Load all animations from assets folder"""
-        self.idle_frames = self.load_animation("assets/player", "idle", 1)
-        self.walking_frames = self.load_animation("assets/player", "running", 1)
-        self.running_frames = self.load_animation("assets/player", "running", 1)
-        self.sprinting_frames = self.load_animation("assets/player", "running", 1)
-        self.jumping_frames = self.load_animation("assets/player", "jumping", 1)  # 1 frame for jumping
-        self.jumping_facing_frames = self.load_animation("assets/player", "jumping_facing", 1)  # 1 frame for jumping facing
-        self.falling_frames = self.load_animation("assets/player", "falling", 1)  # 1 frame for falling
-        self.falling_facing_frames = self.load_animation("assets/player", "falling_facing", 1)  # 1 frame for falling
-
-        # Store all animations in a dictionary
+        """Load all animations from their respective folders"""
+        self.idle_frames = self.load_animation("assets/player/idle")
+        self.walking_frames = self.load_animation("assets/player/walking")
+        self.running_frames = self.load_animation("assets/player/running")
+        self.sprinting_frames = self.load_animation("assets/player/sprinting")
+        self.jumping_frames = self.load_animation("assets/player/jumping")
+        self.jumping_facing_frames = self.load_animation("assets/player/jumping_facing")
+        self.falling_frames = self.load_animation("assets/player/falling")
+        self.falling_facing_frames = self.load_animation("assets/player/falling_facing")
 
         self.animations = {
             "idle": self.idle_frames,
+            "walk": self.walking_frames,
             "run": self.running_frames,
             "sprint": self.sprinting_frames,
             "jump": self.jumping_frames,
             "jump_direction": self.jumping_facing_frames,
             "fall": self.falling_frames,
-            "fall_drection": self.falling_facing_frames,
+            "fall_direction": self.falling_facing_frames,
         }
         
     def set_animation(self, name):
@@ -169,23 +169,25 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.rect.x += self.y_velocity
 
     def choose_movement_animations(self):
-        if self.x_velocity == 0:
-            if self.y_velocity == 0:
-                self.set_animation("idle")
-            elif self.jump_active == True:
-                self.set_animation("jump")
-            elif self.y_velocity > 0:
-                self.set_animation("fall") 
-
-        elif self.x_velocity != 0:
-            if self.jump_active == True:
+        if self.y_velocity < 0:  # Going up (jumping)
+            if self.x_velocity != 0:
                 self.set_animation("jump_direction")
-            elif self.sprint == True:
-                self.set_animation("sprint")
-            elif self.sprint == False:
+            else:
+                self.set_animation("jump")
+        elif self.y_velocity > 0:  # Going down (falling)
+            if self.x_velocity != 0:
+                self.set_animation("fall_direction")
+            else:
+                    self.set_animation("fall")
+        else:  # On ground
+            if self.x_velocity == 0:
+                self.set_animation("idle")
+            elif self.x_velocity < 2.5:
+                self.set_animation("walk")
+            elif self.x_velocity < 5:
                 self.set_animation("run")
-            elif self.y_velocity > 0:
-                self.set_animation("fall_drection")
+            elif self.x_velocity < 10:
+                self.set_animation("sprint")        
 
     def render(self, screen):
         """Render the player sprite to the screen"""
@@ -197,6 +199,6 @@ class Player(pygame.sprite.Sprite, PhysicsObject):         # Player class inheri
         self.handle_gravity()
         self.handle_movement()
         self.handle_collisions(tiles)
-        self.choose_movement_animations
+        self.choose_movement_animations()
         self.update_animation()  # Update animation frame based on the current animation
 

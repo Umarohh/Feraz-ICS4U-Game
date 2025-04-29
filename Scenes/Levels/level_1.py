@@ -7,10 +7,12 @@ class Level1(Level):
     def __init__(self, screen, camera, player):
         super().__init__(screen)  # Calls Level's __init__, so screen and not completed are set
         self.tilemap = Tilemap()
-        self.tilemap.load_from_file("Assets/Maps/level_1_tilemap.txt")
-        self.load_backgrounds("Assets/Backgrounds/bg_layer_1.png", 
-                               "Assets/Backgrounds/bg_layer_2.png", 
-                               "Assets/Backgrounds/fg_layer.png")
+        self.tilemap.load_from_file("Assets/Levels/Level1/Map/level_1_tilemap.txt")
+        self.load_backgrounds("Assets/Levels/Level1/Background/sky_moon.png", 
+                               "Assets/Levels/Level1/Background/clouds.png", 
+                               "Assets/Levels/Level1/Background/back_trees.png",
+                               "Assets/Levels/Level1/Background/middle_trees.png",
+                               "Assets/Levels/Level1/Background/front_trees.png")
 
     def update_logic(self):
         """Level 1 logic"""

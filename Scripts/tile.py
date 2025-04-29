@@ -4,8 +4,7 @@ TILE_SIZE = 32  # Set a constant tile size
 
 # You can preload tile images globally or through a function if you prefer
 TILE_IMAGES = {
-    1: pygame.image.load('placeholder.png').convert_alpha(),     # Ground tile
-    2: pygame.image.load('placeholder2.png').convert_alpha(),    # Platform tile
+    1: pygame.image.load('Assets/Universal/dirt_tile.png').convert_alpha(),     # Ground tile (now using dirt_tile.png)
     # Add more types as needed
 }
 
